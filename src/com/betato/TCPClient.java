@@ -3,30 +3,41 @@ package com.betato;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class TCPClient extends Thread {
 
-	Socket s = null;
-	String ip = "localhost";
+	DataInputStream input;
+	DataOutputStream output;
+	Socket s;
+	FileInputStream fileIn;
 	int serverPort;
 
-	public TCPClient(String ip, int serverPort) {
-		this.ip = ip;
-		this.serverPort = serverPort;
-		this.start();
+	public TCPClient(String ip, int serverPort, FileInputStream fileIn) {
+			try {
+			this.serverPort = serverPort;
+			s = new Socket(ip, serverPort);
+			input = new DataInputStream(s.getInputStream());
+			output = new DataOutputStream(s.getOutputStream());
+			this.fileIn = fileIn;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
 		try {
-			s = new Socket(ip, serverPort);
-			DataInputStream input = new DataInputStream(s.getInputStream());
-			DataOutputStream output = new DataOutputStream(s.getOutputStream());
-
-			// Read and write to streams here
 			
+			byte[] buffer = new byte[1024];
+			int number;
+
+			while ((number = fileIn.read(buffer)) != -1) {
+				output.write(buffer, 0, number);
+			}
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (EOFException e) {
