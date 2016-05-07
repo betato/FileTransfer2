@@ -12,9 +12,9 @@ public class TCPServer extends Thread {
 	DataOutputStream output;
 	Socket clientSocket;
 	
-	public TCPServer(Socket aClientSocket) {
+	public TCPServer(Socket clientSocket) {
 		try {
-			clientSocket = aClientSocket;
+			this.clientSocket = clientSocket;
 			input = new DataInputStream(clientSocket.getInputStream());
 			output = new DataOutputStream(clientSocket.getOutputStream());
 			this.start();
