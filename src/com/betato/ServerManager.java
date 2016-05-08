@@ -8,9 +8,11 @@ public class ServerManager extends Thread {
 	
 	int serverPort;
 	ServerSocket listenerSocket;
+	String saveFilePath;
 	
-	public ServerManager(int serverPort) {
+	public ServerManager(int serverPort, String saveFilePath) {
 		this.serverPort = serverPort;
+		this.saveFilePath = saveFilePath;
 		this.start();
 	}
 
@@ -21,7 +23,7 @@ public class ServerManager extends Thread {
 			System.out.println("Server Listening");
 			while (true) {
 				Socket clientSocket = listenerSocket.accept();
-				new TCPServer(clientSocket);
+				new TCPServer(clientSocket, saveFilePath);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

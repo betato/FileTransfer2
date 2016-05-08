@@ -16,13 +16,14 @@ public class TCPClient extends Thread {
 	FileInputStream fileIn;
 	int serverPort;
 
-	public TCPClient(String ip, int serverPort, FileInputStream fileIn) {
-			try {
+	public TCPClient(String ip, int serverPort, String file) {
+		try {
 			this.serverPort = serverPort;
 			s = new Socket(ip, serverPort);
 			input = new DataInputStream(s.getInputStream());
 			output = new DataOutputStream(s.getOutputStream());
-			this.fileIn = fileIn;
+			fileIn = new FileInputStream(file);
+			this.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -30,14 +31,16 @@ public class TCPClient extends Thread {
 
 	public void run() {
 		try {
-			
 			byte[] buffer = new byte[1024];
 			int number;
 
 			while ((number = fileIn.read(buffer)) != -1) {
 				output.write(buffer, 0, number);
+				output.flush();
 			}
-
+			fileIn.close();
+			output.close();
+			System.out.println("File Transfered");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (EOFException e) {
